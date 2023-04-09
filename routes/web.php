@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TodolistController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::controller(TodolistController::class)->middleware('member')->group(function () {
+    Route::get('/', 'todolist');
+    Route::post('/', 'addTodo');
+    Route::post('/{id}/delete', 'removeTodo');
 });
 
 Route::controller(UserController::class)->group(function () {

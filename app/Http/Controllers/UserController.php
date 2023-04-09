@@ -32,7 +32,6 @@ class UserController extends Controller
             return response()->view('user.login', [
                 'title' => 'Login Page',
                 'error' => 'Username atau Password tidak boleh kosong',
-                "user" => $request->input('username') ?? '',
             ]);
         }
 
@@ -43,7 +42,6 @@ class UserController extends Controller
             return response()->view("user.login", [
                 "title" => "Login",
                 "error" => "Username atau Password salah",
-                "user" => $request->input('username') ?? '',
             ]);
         }
     }
