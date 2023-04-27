@@ -21,8 +21,6 @@ Route::controller(TodolistController::class)->middleware('auth')->group(function
     Route::post('/', 'addTodo')->name('addTodo');
 
     Route::post('/{id}/delete', 'removeTodo');
-
-    Route::post('/logout', 'logout')->name('logout');
 });
 
 Route::controller(UserController::class)->group(function () {
@@ -31,4 +29,6 @@ Route::controller(UserController::class)->group(function () {
 
     Route::get('/login', 'viewLogin')->middleware('guest')->name('login');
     Route::post('/login', 'login')->name('post_login');
+
+    Route::post('/logout', 'logout')->name('logout');
 });

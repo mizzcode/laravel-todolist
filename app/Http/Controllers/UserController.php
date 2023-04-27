@@ -73,11 +73,9 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-        $userId = $request->session()->get('user_id');
-
-        DB::table('sessions')->where('user_id', $userId)->delete();
-
         $request->session()->invalidate();
+
+        $request->session()->forget('user_id');
 
         return redirect()->route('login');
     }
