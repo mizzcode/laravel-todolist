@@ -15,14 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::controller(TodolistController::class)->middleware('auth')->group(function () {
-//     Route::get('/', 'todolist')->name('home');
-
-//     Route::post('/', 'addTodo')->name('addTodo');
-
-//     Route::post('/{id}/delete', 'removeTodo');
-// });
-
 Route::get('/', function () {
     return response()->redirectToIntended('/todolist');
 });
