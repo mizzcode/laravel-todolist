@@ -19,7 +19,7 @@
     </div>
     @endif
     <div class="row">
-        <form method="post" action="/logout">
+        <form method="post" action="{{ route('logout') }}">
             @csrf
             <button class="w-15 btn btn-lg btn-danger" type="submit">Logout</button>
         </form>
@@ -29,11 +29,16 @@
             <h1 class="display-4 fw-bold lh-1 mb-3">Todolist</h1>
         </div>
         <div class="col-md-10 mx-auto col-lg-5">
-            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/">
+            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ route('addTodo') }}">
                 @csrf
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" name="todo" placeholder="todo">
+                    <input type="text" class="form-control @error('todo') is-invalid @enderror" name="todo" placeholder="todo">
                     <label for="todo">Todo</label>
+                    @error('todo')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+                @enderror
                 </div>
                 <button class="w-100 btn btn-lg btn-primary" type="submit">Add Todo</button>
             </form>
@@ -44,23 +49,23 @@
             <form id="deleteForm" method="post" style="display: none">
 
             </form>
-            <table class="table table-striped">
+            <table class="table table-striped table-bordered text-center">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Todo</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">TODO</th>
+                    <th scope="col">ACTION</th>
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($todolist as $todo)
                     <tr>
-                        <th scope="row">{{$todo['id']}}</th>
-                        <td>{{$todo['todo']}}</td>
+                        <th scope="row">{{ $loop->iteration }}</th>
+                        <td>{{ $todo['todo'] }}</td>
                         <td>
                             <form action="/{{$todo['id']}}/delete" method="post">
                                 @csrf
-                                <button class="w-100 btn btn-lg btn-danger" type="submit">Remove</button>
+                                <button class="w-100 btn btn-lg btn-danger" onclick="return confirm('are you sure?')" type="submit">Remove</button>
                             </form>
                         </td>
                     </tr>        

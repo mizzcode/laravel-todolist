@@ -2,54 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\TodolistService;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Todolist;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 
 class TodolistController extends Controller
 {
-    private TodolistService $todolistService;
-
-    public function __construct(TodolistService $todolistService)
-    {
-        $this->todolistService = $todolistService;
-    }
-
     public function todolist(): Response
     {
-        // get data todolist
-        $todolist = $this->todolistService->getTodo();
-
         return response()->view('todolist.todolist', [
             'title' => 'Todolist - Laravel',
-            'todolist' => $todolist,
+            'todolist' => Todolist::all(),
         ]);
     }
 
-    public function addTodo(Request $request): Response|RedirectResponse
+    public function addTodo(Request $request)
     {
-        $todo = $request->input('todo');
+        $validatedData = $request->validate([
+            'todo' => 'required|max:255'
+        ]);
 
-        // get data todolist
-        $todolist = $this->todolistService->getTodo();
+        $validatedData['user_id'] = Auth::user()->id;
 
-        if (empty($todo)) {
-            return response()->view('todolist.todolist', [
-                'title' => 'Todolist - Laravel',
-                'error' => 'Todo tidak boleh kosong',
-                'todolist' => $todolist,
-            ]);
-        }
+        Todolist::create($validatedData);
 
-        $this->todolistService->saveTodo(uniqid(), $todo);
-        return response()->redirectTo('/');
+        return response()->redirectToRoute('home');
     }
 
     public function removeTodo(string $id)
     {
-        $this->todolistService->removeTodo($id);
+        Todolist::destroy($id);
+
         return response()->redirectTo('/');
     }
 }

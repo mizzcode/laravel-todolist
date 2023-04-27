@@ -19,12 +19,30 @@
         </div>
         @endif
         <h1 class="text-center">Welcome</h1>
-        <form class="needs-validate" action="{{ route('post_login') }}" method="post">
+        <form class="needs-validate" action="{{ route('post_register') }}" method="post">
             @csrf
             <div class="form-group">
+                <label class="form-label" for="name">Full Name</label>
+                <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" required>
+                @error('name')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+                @enderror
+            </div>
+            <div class="form-group">
                 <label class="form-label" for="username">Username</label>
-                <input class="form-control @error('username') is-invalid @enderror" type="text" name="username" value="{{ old('username') }}" required>
+                <input class="form-control @error('username') is-invalid @enderror" type="text" name="username" required>
                 @error('username')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-control @error('email') is-invalid @enderror" type="email" name="email" required>
+                @error('email')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
@@ -39,17 +57,8 @@
                 </div>
                 @enderror
             </div>
-            <div class="form-group">
-                <input class="form-check-input" type="checkbox" name="remember">
-                <label class="form-check-label"for="checkbox">Remember Me</label>
-            </div>
-            <input class="btn btn-success w-100" type="submit" value="Login">
+            <input class="btn btn-success w-100" type="submit" value="Register">
         </form>
-
-        <div class="mt-3 text-center">
-            <p>Belum punya akun? <a class="text-decoration-none" href="{{ route('register') }}">Daftar</a></p>
-        </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

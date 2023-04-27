@@ -15,13 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(TodolistController::class)->middleware('member')->group(function () {
-    Route::get('/', 'todolist');
-    Route::post('/', 'addTodo');
+Route::controller(TodolistController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'todolist')->name('home');
+
+    Route::post('/', 'addTodo')->name('addTodo');
+
     Route::post('/{id}/delete', 'removeTodo');
+
+    Route::post('/logout', 'logout')->name('logout');
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('/login', 'viewLogin')->middleware('guest');
-    Route::post('/login', 'login')->middleware('guest');
+    Route::get('/register', 'viewRegister')->middleware('guest')->name('register');
+    Route::post('/register', 'register')->name('post_register');
+
+    Route::get('/login', 'viewLogin')->middleware('guest')->name('login');
+    Route::post('/login', 'login')->name('post_login');
 });

@@ -2,47 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\UserService;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    private UserService $userService;
-
-    public function __construct(UserService $userService)
+    public function viewRegister()
     {
-        $this->userService = $userService;
+        return view('user.register', [
+            'title' => 'Register Page'
+        ]);
     }
 
-    public function viewLogin(): Response
+    public function register(Request $request): RedirectResponse
     {
-        return response()->view('user.login', [
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'username' => 'required|min:4|max:15',
+            'email' => 'required|email:dns',
+            'password' => 'required|min:6|max:25',
+        ]);
+
+        // buat hash untuk password 
+        $validatedData['password'] = Hash::make($request->input('password'));
+
+        // insert data user ke database
+        User::create($validatedData);
+
+        // jika berhasil redirect ke login
+        return redirect()->route('login');
+    }
+
+
+    public function viewLogin()
+    {
+        return view('user.login', [
             'title' => 'Login Page'
         ]);
     }
 
-    public function login(Request $request): Response|RedirectResponse
+    public function login(Request $request)
     {
-        $username = $request->input('username');
-        $password = $request->input('password');
+        // validasi user
+        $credentials = $request->validate([
+            'username' => 'required|min:4|max:15',
+            'password' => 'required|min:6|max:25',
+        ]);
 
-        if (empty($username) || empty($password)) {
-            return response()->view('user.login', [
-                'title' => 'Login Page',
-                'error' => 'Username atau Password tidak boleh kosong',
-            ]);
+        // autentikasi pengguna
+        if (Auth::attempt($credentials)) {
+
+            $request->session()->regenerate();
+
+            // jika lolos autentikasi maka simpan session user ke database
+            $request->session()->put('user_id', Auth::user()->id);
+
+            // redirect ke home
+            return redirect()->intended('/');
         }
 
-        if ($this->userService->login($username, $password)) {
-            $request->session()->put("user", $username);
-            return response()->redirectTo('/');
-        } else {
-            return response()->view("user.login", [
-                "title" => "Login",
-                "error" => "Username atau Password salah",
-            ]);
-        }
+        return view('user.login', [
+            'title' => 'Login Page',
+            'error' => 'Username atau Password salah'
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $userId = $request->session()->get('user_id');
+
+        DB::table('sessions')->where('user_id', $userId)->delete();
+
+        $request->session()->invalidate();
+
+        return redirect()->route('login');
     }
 }
