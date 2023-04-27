@@ -62,7 +62,7 @@ class UserController extends Controller
             $request->session()->put('user_id', Auth::user()->id);
 
             // redirect ke home
-            return redirect()->intended('/');
+            return redirect()->intended('/todolist');
         }
 
         return view('user.login', [

@@ -4,20 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Todolist;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class TodolistController extends Controller
 {
-    public function todolist(): Response
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
         return response()->view('todolist.todolist', [
             'title' => 'Todolist - Laravel',
-            'todolist' => Todolist::all(),
+            'todolists' => Todolist::where('user_id', Auth::user()->id)->get(),
         ]);
     }
 
-    public function addTodo(Request $request)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
     {
         $validatedData = $request->validate([
             'todo' => 'required|max:255'
@@ -27,13 +32,16 @@ class TodolistController extends Controller
 
         Todolist::create($validatedData);
 
-        return response()->redirectToRoute('home');
+        return redirect()->route('todolist.index');
     }
 
-    public function removeTodo(string $id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Todolist $todolist)
     {
-        Todolist::destroy($id);
+        Todolist::destroy($todolist->id);
 
-        return response()->redirectTo('/');
+        return redirect()->route('todolist.index');
     }
 }

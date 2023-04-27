@@ -11,8 +11,8 @@ class TodolistControllerTest extends TestCase
     public function testTodolist()
     {
         $this->withSession([
-            'user' => 'mizz'
-        ])->get('/')->assertSeeText('Todolist - Laravel');
+            'user_id' => 'mizz'
+        ])->get('/todolist')->assertSeeText('Todolist - Laravel');
     }
     public function testTodolistFailed()
     {

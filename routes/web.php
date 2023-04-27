@@ -15,15 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(TodolistController::class)->middleware('auth')->group(function () {
-    Route::get('/', 'todolist')->name('home');
+// Route::controller(TodolistController::class)->middleware('auth')->group(function () {
+//     Route::get('/', 'todolist')->name('home');
 
-    Route::post('/', 'addTodo')->name('addTodo');
+//     Route::post('/', 'addTodo')->name('addTodo');
 
-    Route::post('/{id}/delete', 'removeTodo');
+//     Route::post('/{id}/delete', 'removeTodo');
+// });
+
+Route::get('/', function () {
+    return response()->redirectToIntended('/todolist');
 });
 
 Route::controller(UserController::class)->group(function () {
+
     Route::get('/register', 'viewRegister')->middleware('guest')->name('register');
     Route::post('/register', 'register')->name('post_register');
 
@@ -32,3 +37,5 @@ Route::controller(UserController::class)->group(function () {
 
     Route::post('/logout', 'logout')->name('logout');
 });
+
+Route::resource('/todolist', TodolistController::class)->middleware('auth')->names('todolist')->only(['index', 'store', 'destroy']);

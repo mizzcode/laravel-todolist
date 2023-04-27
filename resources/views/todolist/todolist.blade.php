@@ -29,7 +29,7 @@
             <h1 class="display-4 fw-bold lh-1 mb-3">Todolist</h1>
         </div>
         <div class="col-md-10 mx-auto col-lg-5">
-            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ route('addTodo') }}">
+            <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="{{ route('todolist.store') }}">
                 @csrf
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control @error('todo') is-invalid @enderror" name="todo" placeholder="todo">
@@ -46,9 +46,6 @@
     </div>
     <div class="row align-items-right g-lg-5 py-5">
         <div class="mx-auto">
-            <form id="deleteForm" method="post" style="display: none">
-
-            </form>
             <table class="table table-striped table-bordered text-center">
                 <thead>
                 <tr>
@@ -58,14 +55,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($todolist as $todo)
+                    @foreach ($todolists as $todolist)
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
-                        <td>{{ $todo['todo'] }}</td>
+                        <td> {{ $todolist['todo'] }}</td>
                         <td>
-                            <form action="/{{$todo['id']}}/delete" method="post">
+                            <form action="{{ route('todolist.destroy', $todolist->id) }}" method="post">
                                 @csrf
-                                <button class="w-100 btn btn-lg btn-danger" onclick="return confirm('are you sure?')" type="submit">Remove</button>
+                                @method('delete')
+                                <button class="w-100 btn btn-lg btn-danger" onclick="return confirm('Are you sure?')" type="submit">Remove</button>
                             </form>
                         </td>
                     </tr>        
