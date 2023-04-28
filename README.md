@@ -16,7 +16,10 @@
 
 ```composer install```
 
-```npm install```
+rename .env.example to .env and then change configuration the database to your database
+
+## Migrate Database
+```php artisan migrate```
 
 ### Run Server
 ```php artisan serve```
